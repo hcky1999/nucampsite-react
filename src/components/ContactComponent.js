@@ -35,20 +35,21 @@ class Contact extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) {
-        const target = event.target;
-        const name = target.name;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+    // handleInputChange(event) {
+    //     const target = event.target;
+    //     const name = target.name;
+    //     const value = target.type === 'checkbox' ? target.checked : target.value;
 
-        this.setState({
-            [name]: value
+    //     this.setState({
+    //         [name]: value
 
-        });
+    //     });
 
-    }
+    // }
     handleSubmit(values) {
         console.log('Current State is: ' + JSON.stringify(values));
         alert('Current State is: ' + JSON.stringify(values));
+        this.props.postFeedback(values)
         this.props.resetFeedbackForm();
     }
     render() {

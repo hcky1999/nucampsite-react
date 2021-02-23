@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {
-    Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
+    Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem,
     Modal, ModalHeader, ModalBody, Label
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
+import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 
 const required = val => val && val.length;
@@ -15,35 +17,42 @@ const minLength = len => val => val && val.length >= len;
 function RenderCampsite({ campsite }) {
     return (
         <div className="col-md-5 m-1">
-            <Card>
-                <CardImg top src={campsite.image} alt={campsite.name} />
-                <CardBody>
-                    <CardTitle>{campsite.name}</CardTitle>
-                    <CardText>{campsite.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
+                    <CardBody>
+                        <CardText>{campsite.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
 
         </div>
     );
 }
-function RenderComments({ comments, addComment, campsiteId }) {
+function RenderComments({ comments, postComment, campsiteId }) {
     if (comments) {
         return (
             <div className="col-md-5 m-1">
                 <h4>Comments</h4>
-                {
-                    comments.map(comment => {
+                <Stagger in>
+                    {comments.map(comment => {
                         return (
-                            <div key={comment.id}>
-                                <p>
-                                    {comment.text} <br />
-                                    -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}
-                                </p>
-                            </div>
-                        )
-                    })
-                }
-                 <CommentForm campsiteId={campsiteId} addComment={addComment} />
+                            <Fade in>
+                                <div key={comment.id}>
+                                    <p>
+                                        {comment.text} <br />
+                                            -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}
+                                    </p>
+                                </div>
+                            </Fade>
+                        );
+                    })}
+                </Stagger>
+                <CommentForm campsiteId={campsiteId} postComment={postComment} />
             </div>
         );
     }
@@ -71,15 +80,15 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
-        
+        this.props.postComment(this.props.campsiteId, values.rating, values.author, values.text);
+
     }
-   
+
     render() {
         return (
             <React.Fragment>
                 <button
-                      onClick={this.toggleModal}
+                    onClick={this.toggleModal}
                     className="outline btn btn-secondary fa fa-pencil fa-lg">
                     Submit comment
                 </button>
@@ -138,7 +147,7 @@ class CommentForm extends Component {
                                     className="form-control"
                                 />
                             </div>
-                            <button className = "btn btn-primary">Submit</button>
+                            <button className="btn btn-primary">Submit</button>
                         </LocalForm>
                     </ModalBody>
                 </Modal>
@@ -148,7 +157,7 @@ class CommentForm extends Component {
 }
 
 function CampsiteInfo(props) {
-    if(props.isLoading){
+    if (props.isLoading) {
         return (
             <div className="container">
                 <div className="row">
@@ -157,8 +166,8 @@ function CampsiteInfo(props) {
             </div>
         );
     }
-    if (props.errMess){
-        return(
+    if (props.errMess) {
+        return (
             <div className="container">
                 <div className="col">
                     <h4>{props.errMess}</h4>
@@ -181,10 +190,10 @@ function CampsiteInfo(props) {
                 </div>
                 <div className="row">
                     <RenderCampsite campsite={props.campsite} />
-                    <RenderComments 
+                    <RenderComments
                         comments={props.comments}
-                        addComment = {props.addComment}
-                        campsiteId = {props.campsite.id}    
+                        postComment={props.postComment}
+                        campsiteId={props.campsite.id}
                     />
                 </div>
             </div>
