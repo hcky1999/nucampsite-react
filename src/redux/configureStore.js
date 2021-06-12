@@ -26,3 +26,5 @@ export const ConfigureStore = () => {
 
     return store;
 };
+
+//reducers done here!

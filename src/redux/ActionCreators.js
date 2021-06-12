@@ -190,7 +190,7 @@ export const addPartners = partners => ({
     payload: partners
 });
 
-export const postFeedback = (feedback) => () => {
+export const postFeedback = (feedback) =>()=> {
     return fetch(baseUrl + "feedback", {
         method: "POST",
         body: JSON.stringify(feedback),

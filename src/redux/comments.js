@@ -10,6 +10,7 @@ export const Comments = (state = { errMess: null, comments: []}, action) => {
 
         case ActionTypes.ADD_COMMENT:
             const comment = action.payload;
+            //concat use to append data in the existing array => old comments with the new comment
             return {...state, comments: state.comments.concat(comment)};
 
         default:
